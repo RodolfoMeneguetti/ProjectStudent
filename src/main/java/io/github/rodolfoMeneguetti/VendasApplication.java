@@ -20,11 +20,26 @@ public class VendasApplication {
     @Bean
     public CommandLineRunner init (@Autowired RepositoryClient repository){
         return args -> {
+            System.out.println(" +++++ Salvando clientes +++++ ");
             repository.salvar(new Cliente ("Paulo Rodolfo"));
             repository.salvar(new Cliente("Meneguetti"));
 
             List<Cliente> clienteList = repository.listarClientes();
             clienteList.forEach(System.out::println);
+
+            System.out.println(" +++++ Atualizando clientes +++++ ");
+            clienteList.forEach(c -> {c.setNome(c.getNome() + " Atualizado.");
+            repository.atualizar(c);
+            });
+            clienteList.forEach(System.out::println);
+
+            System.out.println(" +++++ Buscando por cliente +++++ ");
+            repository.buscarPorNome("Men").forEach(System.out::println);
+
+            System.out.println(" +++++ Deletando todos os clientes  +++++ ");
+            repository.listarClientes().forEach(c -> {
+                repository.deletar(c);
+            });
         };
     }
 
