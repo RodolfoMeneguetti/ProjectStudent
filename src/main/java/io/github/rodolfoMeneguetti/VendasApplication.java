@@ -1,6 +1,5 @@
 package io.github.rodolfoMeneguetti;
-
-import io.github.rodolfoMeneguetti.Model.Cliente;
+import io.github.rodolfoMeneguetti.domain.entity.Cliente;
 import io.github.rodolfoMeneguetti.domain.repository.RepositoryClient;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
@@ -24,9 +23,11 @@ public class VendasApplication {
             repository.salvar(new Cliente ("Paulo Rodolfo"));
             repository.salvar(new Cliente("Meneguetti"));
 
+
             List<Cliente> clienteList = repository.listarClientes();
             clienteList.forEach(System.out::println);
 
+            /*
             System.out.println(" +++++ Atualizando clientes +++++ ");
             clienteList.forEach(c -> {c.setNome(c.getNome() + " Atualizado.");
             repository.atualizar(c);
@@ -39,7 +40,7 @@ public class VendasApplication {
             System.out.println(" +++++ Deletando todos os clientes  +++++ ");
             repository.listarClientes().forEach(c -> {
                 repository.deletar(c);
-            });
+            }); */
         };
     }
 

@@ -1,10 +1,13 @@
 package io.github.rodolfoMeneguetti.domain.repository;
 
-import io.github.rodolfoMeneguetti.Model.Cliente;
+import io.github.rodolfoMeneguetti.domain.entity.Cliente;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.core.RowMapper;
 import org.springframework.stereotype.Repository;
+import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityManager;
 
 import java.sql.ResultSet;
 import java.sql.SQLException;
@@ -14,7 +17,6 @@ import java.util.List;
 public class RepositoryClient {
 
     // Scripts SQL
-    private static String INSERT = "INSERT INTO CLIENTE (NOME) VALUES (?) ";
 
     private static String SELECTALLCLIENTES = "SELECT * FROM CLIENTE";
 
@@ -24,6 +26,9 @@ public class RepositoryClient {
 
     @Autowired
     private JdbcTemplate jdbcTamplate;
+
+    @Autowired
+    private EntityManager entityManager;
 
     private static RowMapper<Cliente> getRowMapper() {
         return new RowMapper<Cliente>() {
@@ -36,10 +41,13 @@ public class RepositoryClient {
         };
     }
 
+
+    @Transactional
     public Cliente salvar(Cliente cliente) {
-        jdbcTamplate.update(INSERT, new Object[]{cliente.getNome()});
+        entityManager.persist(cliente);
         return cliente;
     }
+
 
     public Cliente atualizar(Cliente cliente){
         jdbcTamplate.update(UPDATE, new Object[]{cliente.getNome(), cliente.getId()});

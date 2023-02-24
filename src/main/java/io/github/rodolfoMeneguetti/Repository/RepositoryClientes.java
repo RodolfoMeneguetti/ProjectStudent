@@ -1,6 +1,6 @@
 package io.github.rodolfoMeneguetti.Repository;
 
-import io.github.rodolfoMeneguetti.Model.Cliente;
+import io.github.rodolfoMeneguetti.domain.entity.Cliente;
 import org.springframework.stereotype.Repository;
 
 @Repository

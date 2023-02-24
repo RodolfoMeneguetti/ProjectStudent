@@ -3,14 +3,29 @@ package io.github.rodolfoMeneguetti.domain.entity;
 import javax.persistence.*;
 
 @Entity
+@Table(name = "cliente")
 public class Cliente {
 
     @Id
     @GeneratedValue(strategy = GenerationType.AUTO)
+    @Column(name = "id")
     private Integer id;
 
-    @Column(length = 100, nullable = false)
+    @Column(name = "nome", length = 100)
     private String nome;
+
+    public Cliente (){
+
+    }
+
+    public Cliente(Integer id, String nome) {
+        this.id = id;
+        this.nome = nome;
+    }
+
+    public Cliente(String nome) {
+        this.nome = nome;
+    }
 
     public Integer getId() {
         return id;
@@ -26,5 +41,13 @@ public class Cliente {
 
     public void setNome(String nome) {
         this.nome = nome;
+    }
+
+    @Override
+    public String toString() {
+        return "Cliente{" +
+                "id=" + id +
+                ", nome='" + nome + '\'' +
+                '}';
     }
 }
