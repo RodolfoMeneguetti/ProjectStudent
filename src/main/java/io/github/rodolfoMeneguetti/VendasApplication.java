@@ -20,27 +20,33 @@ public class VendasApplication {
     public CommandLineRunner init (@Autowired RepositoryClient repository){
         return args -> {
             System.out.println(" +++++ Salvando clientes +++++ ");
-            repository.salvar(new Cliente ("Paulo Rodolfo"));
-            repository.salvar(new Cliente("Meneguetti"));
+            repository.save(new Cliente ("Paulo Rodolfo"));
+            repository.save(new Cliente("Meneguetti"));
 
 
-            List<Cliente> clienteList = repository.listarClientes();
+            List<Cliente> clienteList = repository.findAll();
             clienteList.forEach(System.out::println);
 
 
             System.out.println(" +++++ Atualizando clientes +++++ ");
             clienteList.forEach(c -> {c.setNome(c.getNome() + " Atualizado.");
-            repository.atualizar(c);
+            repository.save(c);
             });
             clienteList.forEach(System.out::println);
 
             System.out.println(" +++++ Buscando por cliente +++++ ");
-            repository.buscarPorNome("Men").forEach(System.out::println);
+            repository.findByNomeLike("Men").forEach(System.out::println);
 
             System.out.println(" +++++ Deletando todos os clientes  +++++ ");
-            repository.listarClientes().forEach(c -> {
-                repository.deletar(c);
+            repository.findAll().forEach(c -> {
+                repository.delete(c);
             });
+            System.out.println(" +++++ Buscando por cliente +++++ ");
+            if(!repository.findAll().isEmpty() ){
+
+                repository.findByNomeLike("Men").forEach(System.out::println);
+            }
+            System.out.println(" +++++ Nao Encontrado CLientes +++++ ");
         };
     }
 
