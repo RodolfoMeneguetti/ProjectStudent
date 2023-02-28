@@ -19,7 +19,7 @@ public class Cliente {
     @OneToMany( mappedBy = "cliente", fetch = FetchType.LAZY)
     private Set<Pedido> pedidos;
 
-    @OneToMany( mappedBy = "pedido")
+    @OneToMany( mappedBy = "pedido", fetch = FetchType.LAZY)
     private List<ItemPedido> itens;
 
     public Cliente (){
