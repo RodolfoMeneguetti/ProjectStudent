@@ -1,6 +1,8 @@
 package io.github.rodolfoMeneguetti;
 import io.github.rodolfoMeneguetti.domain.entity.Cliente;
+import io.github.rodolfoMeneguetti.domain.entity.Pedido;
 import io.github.rodolfoMeneguetti.domain.repository.RepositoryClient;
+import io.github.rodolfoMeneguetti.domain.repository.RepositoryPedido;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.boot.CommandLineRunner;
@@ -10,6 +12,8 @@ import org.springframework.context.annotation.Bean;
 import org.springframework.web.bind.annotation.GetMapping;
 import org.springframework.web.bind.annotation.RestController;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
 import java.util.List;
 
 @SpringBootApplication
@@ -17,36 +21,39 @@ import java.util.List;
 public class VendasApplication {
 
     @Bean
-    public CommandLineRunner init (@Autowired RepositoryClient repository){
+    public CommandLineRunner init (
+            @Autowired RepositoryClient repositoryCliente,
+            @Autowired RepositoryPedido repositoryPedido){
         return args -> {
             System.out.println(" +++++ Salvando clientes +++++ ");
-            repository.save(new Cliente ("Paulo Rodolfo"));
-            repository.save(new Cliente("Meneguetti"));
+            repositoryCliente.save(new Cliente ("Paulo Rodolfo"));
+            repositoryCliente.save(new Cliente("Meneguetti"));
+
+            Cliente Rodolfo = new Cliente ("Rodolfo");
+            repositoryCliente.save(Rodolfo);
+
+            Pedido p = new Pedido ();
+            p.setCliente(Rodolfo);
+            p.setDataPedido(LocalDate.now());
+            p.setTotal(BigDecimal.valueOf(100));
+            repositoryPedido.save(p);
+
+            System.out.println(" +++++ Listando pedidos atraves do cliente +++++ ");
+            Cliente cliente = repositoryCliente.findClienteFetchPedidos(Rodolfo.getId());
+            System.out.println(cliente);
+            System.out.println(" +++++ Imprimindo Pedidos +++++ ");
+            System.out.println(cliente.getPedidos());
 
 
-            List<Cliente> clienteList = repository.findAll();
+            List<Cliente> clienteList = repositoryCliente.findAll();
             clienteList.forEach(System.out::println);
 
+            System.out.println(" +++++ Analisando Clientes +++++ ");
+            boolean exists = repositoryCliente.existsByNome("Paulo Rodolfo");
+            System.out.println("Existe um cliente com o nome Paulo Rodolfo? " + exists);
 
-            System.out.println(" +++++ Atualizando clientes +++++ ");
-            clienteList.forEach(c -> {c.setNome(c.getNome() + " Atualizado.");
-            repository.save(c);
-            });
-            clienteList.forEach(System.out::println);
-
-            System.out.println(" +++++ Buscando por cliente +++++ ");
-            repository.findByNomeLike("Men").forEach(System.out::println);
-
-            System.out.println(" +++++ Deletando todos os clientes  +++++ ");
-            repository.findAll().forEach(c -> {
-                repository.delete(c);
-            });
-            System.out.println(" +++++ Buscando por cliente +++++ ");
-            if(!repository.findAll().isEmpty() ){
-
-                repository.findByNomeLike("Men").forEach(System.out::println);
-            }
-            System.out.println(" +++++ Nao Encontrado CLientes +++++ ");
+            System.out.println(" +++++ Trazendo Lista de pedidos por cliente +++++ ");
+            repositoryPedido.findByCliente(Rodolfo).forEach(System.out::println);
         };
     }
 

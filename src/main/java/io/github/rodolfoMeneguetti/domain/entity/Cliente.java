@@ -1,6 +1,8 @@
 package io.github.rodolfoMeneguetti.domain.entity;
 
 import javax.persistence.*;
+import java.util.List;
+import java.util.Set;
 
 @Entity
 @Table(name = "cliente")
@@ -14,8 +16,30 @@ public class Cliente {
     @Column(name = "nome", length = 100)
     private String nome;
 
+    @OneToMany( mappedBy = "cliente", fetch = FetchType.LAZY)
+    private Set<Pedido> pedidos;
+
+    @OneToMany( mappedBy = "pedido")
+    private List<ItemPedido> itens;
+
     public Cliente (){
 
+    }
+
+    public List<ItemPedido> getItens() {
+        return itens;
+    }
+
+    public void setItens(List<ItemPedido> itens) {
+        this.itens = itens;
+    }
+
+    public Set<Pedido> getPedidos() {
+        return pedidos;
+    }
+
+    public void setPedidos(Set<Pedido> pedidos) {
+        this.pedidos = pedidos;
     }
 
     public Cliente(Integer id, String nome) {

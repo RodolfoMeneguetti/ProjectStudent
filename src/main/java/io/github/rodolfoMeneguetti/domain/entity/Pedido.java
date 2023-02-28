@@ -1,13 +1,25 @@
 package io.github.rodolfoMeneguetti.domain.entity;
 
-import javax.xml.crypto.Data;
+import javax.persistence.*;
 import java.math.BigDecimal;
+import java.time.LocalDate;
 
+@Entity
+@Table(name = "pedido")
 public class Pedido {
 
+    @Id
+    @GeneratedValue(strategy = GenerationType.AUTO)
     private Integer id;
+
+    @ManyToOne
+    @JoinColumn(name="cliente_id")
     private Cliente cliente;
-    private Data dataPedido;
+
+    @Column(name = "data_pedido")
+    private LocalDate dataPedido;
+
+    @Column(name = "total", precision = 20, scale = 2)
     private BigDecimal total;
 
     public Integer getId() {
@@ -26,11 +38,11 @@ public class Pedido {
         this.cliente = cliente;
     }
 
-    public Data getDataPedido() {
+    public LocalDate getDataPedido() {
         return dataPedido;
     }
 
-    public void setDataPedido(Data dataPedido) {
+    public void setDataPedido(LocalDate dataPedido) {
         this.dataPedido = dataPedido;
     }
 
@@ -40,5 +52,14 @@ public class Pedido {
 
     public void setTotal(BigDecimal total) {
         this.total = total;
+    }
+
+    @Override
+    public String toString() {
+        return "Pedido{" +
+                "id=" + id +
+                ", dataPedido=" + dataPedido +
+                ", total=" + total +
+                '}';
     }
 }
