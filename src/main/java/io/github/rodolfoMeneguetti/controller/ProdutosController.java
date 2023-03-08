@@ -1,4 +1,4 @@
-package io.github.rodolfoMeneguetti.rest.controller;
+package io.github.rodolfoMeneguetti.controller;
 
 import io.github.rodolfoMeneguetti.domain.entity.Produto;
 import io.github.rodolfoMeneguetti.domain.repository.RepositoryProdutos;
@@ -34,9 +34,9 @@ public class ProdutosController {
     @ResponseStatus(HttpStatus.NO_CONTENT)
     public void delete (@PathVariable Integer id){
         repository.findById(id)
-                .map(cliente -> {
-                    repository.delete(cliente);
-                    return cliente;
+                .map(p -> {
+                    repository.delete(p);
+                    return Void.TYPE;
                 }).orElseThrow(() -> new ResponseStatusException(HttpStatus.NOT_FOUND, "Produto não encontrado! "));
     }
 

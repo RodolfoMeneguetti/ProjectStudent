@@ -1,4 +1,4 @@
-package io.github.rodolfoMeneguetti.rest.controller;
+package io.github.rodolfoMeneguetti.controller;
 
 import io.github.rodolfoMeneguetti.domain.entity.Cliente;
 import io.github.rodolfoMeneguetti.domain.repository.RepositoryClient;
