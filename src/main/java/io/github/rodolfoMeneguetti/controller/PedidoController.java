@@ -3,6 +3,8 @@ package io.github.rodolfoMeneguetti.controller;
 import io.github.rodolfoMeneguetti.Service.PedidoService;
 import io.github.rodolfoMeneguetti.domain.entity.ItemPedido;
 import io.github.rodolfoMeneguetti.domain.entity.Pedido;
+import io.github.rodolfoMeneguetti.domain.enums.StatusPedido;
+import io.github.rodolfoMeneguetti.dto.AtualizacaoStatusPedidoDTO;
 import io.github.rodolfoMeneguetti.dto.InformacoesItemPedidoDTO;
 import io.github.rodolfoMeneguetti.dto.InformacoesPedidoDTO;
 import io.github.rodolfoMeneguetti.dto.PedidoDTO;
@@ -42,6 +44,16 @@ public class PedidoController {
                         new ResponseStatusException(NOT_FOUND, "Pedido Nao encontrado."));
     }
 
+    @PatchMapping("{id}")
+    @ResponseStatus(NO_CONTENT)
+    public void updateStatus(
+                @PathVariable Integer id,
+                @RequestBody AtualizacaoStatusPedidoDTO dto){
+
+        String novoStatus = dto.getNovoStatus();
+        service.atualizaStatus(id, StatusPedido.valueOf(novoStatus));
+    }
+
     private InformacoesPedidoDTO converterPedido (Pedido pedido){
        return  InformacoesPedidoDTO
                 .builder()
@@ -50,6 +62,7 @@ public class PedidoController {
                 .cpf(pedido.getCliente().getCpf())
                 .nomeCliente(pedido.getCliente().getNome())
                 .total(pedido.getTotal())
+                .status(pedido.getStatus().name())
                 .items(converterItemPedido(pedido.getItens()))
                .build();
     }

@@ -5,12 +5,14 @@ import io.github.rodolfoMeneguetti.domain.entity.Cliente;
 import io.github.rodolfoMeneguetti.domain.entity.ItemPedido;
 import io.github.rodolfoMeneguetti.domain.entity.Pedido;
 import io.github.rodolfoMeneguetti.domain.entity.Produto;
+import io.github.rodolfoMeneguetti.domain.enums.StatusPedido;
 import io.github.rodolfoMeneguetti.domain.repository.RepositoryClient;
 import io.github.rodolfoMeneguetti.domain.repository.RepositoryItemPedido;
 import io.github.rodolfoMeneguetti.domain.repository.RepositoryPedido;
 import io.github.rodolfoMeneguetti.domain.repository.RepositoryProdutos;
 import io.github.rodolfoMeneguetti.dto.ItemsPedidoDTO;
 import io.github.rodolfoMeneguetti.dto.PedidoDTO;
+import io.github.rodolfoMeneguetti.exception.PedidoNaoEncontradoException;
 import io.github.rodolfoMeneguetti.exception.RegraNegocioException;
 import lombok.RequiredArgsConstructor;
 import org.springframework.stereotype.Service;
@@ -42,6 +44,7 @@ public class PedidoServiceImpl implements PedidoService {
         pedido.setTotal(dto.getTotal());
         pedido.setDataPedido(LocalDate.now());
         pedido.setCliente(cliente);
+        pedido.setStatus(StatusPedido.REALIZADO);
 
         List<ItemPedido> itemsPedido = convertItens(pedido, dto.getItems());
         pedidoRepository.save(pedido);
@@ -53,6 +56,16 @@ public class PedidoServiceImpl implements PedidoService {
     @Override
     public Optional<Pedido> obterPedidoCompleto (Integer id){
         return pedidoRepository.findByIdFetchItens(id);
+    }
+
+    @Override
+    public void atualizaStatus(Integer id, StatusPedido statusPedido) {
+        pedidoRepository
+                .findById(id)
+                .map(pedido -> {
+                    pedido.setStatus(statusPedido);
+                    return pedidoRepository.save(pedido);
+                }).orElseThrow( () -> new PedidoNaoEncontradoException());
     }
 
     private List<ItemPedido> convertItens (Pedido pedido, List<ItemsPedidoDTO> items ) {
