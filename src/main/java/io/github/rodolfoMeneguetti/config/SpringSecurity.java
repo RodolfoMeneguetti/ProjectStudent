@@ -1,6 +1,9 @@
 package io.github.rodolfoMeneguetti.config;
 
+import io.github.rodolfoMeneguetti.Service.impl.UsuarioServiceImpl;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.context.annotation.Bean;
+import org.springframework.http.HttpMethod;
 import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -11,6 +14,9 @@ import org.springframework.security.crypto.password.PasswordEncoder;
 @EnableWebSecurity
 public class SpringSecurity extends WebSecurityConfigurerAdapter {
 
+    @Autowired
+    private UsuarioServiceImpl usuarioServiceImpl;
+
     @Bean
     public PasswordEncoder passwordEncoder() {
         return new BCryptPasswordEncoder();
@@ -19,11 +25,9 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
     @Override
     protected void configure(AuthenticationManagerBuilder auth) throws Exception {
        auth
-               .inMemoryAuthentication()
-               .passwordEncoder(passwordEncoder())
-               .withUser("Rodolfo")
-               .password(passwordEncoder().encode("123"))
-               .roles("USER");
+               .userDetailsService(usuarioServiceImpl)
+               .passwordEncoder(passwordEncoder());
+
     }
 
     @Override
@@ -37,6 +41,9 @@ public class SpringSecurity extends WebSecurityConfigurerAdapter {
                     .hasAnyRole("USER","ADMIN")
                     .antMatchers("/api/produtos/**")
                     .hasRole("ADMIN")
+                    .antMatchers(HttpMethod.POST, "/api/usuarios/**")
+                    .permitAll()
+                    .anyRequest().authenticated()
                 .and()
                 .httpBasic();
     }
