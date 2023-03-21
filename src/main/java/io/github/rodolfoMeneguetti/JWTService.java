@@ -12,7 +12,6 @@ import java.time.Instant;
 import java.time.LocalDateTime;
 import java.time.ZoneId;
 import java.util.Date;
-import java.util.HashMap;
 
 @Service
 public class JWTService {
@@ -29,15 +28,10 @@ public class JWTService {
         Instant instant = dataHoraExpiracao.atZone(ZoneId.systemDefault()).toInstant();
         Date data = Date.from(instant);
 
-        HashMap<String, Object> claims = new HashMap<>();
-        claims.put("emailDoUsuario", "emailUsuario@gmail.com");
-        claims.put("roles", "admin");
-
         return Jwts
                 .builder()
                 .setSubject(usuario.getUserName())
                 .setExpiration(data)
-                .setClaims(claims)
                 .signWith(SignatureAlgorithm.HS512, chaveAssinatura)
                 .compact();
 
