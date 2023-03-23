@@ -2,6 +2,7 @@ package io.github.rodolfoMeneguetti.Service.impl;
 
 import io.github.rodolfoMeneguetti.domain.entity.Usuario;
 import io.github.rodolfoMeneguetti.domain.repository.UsuarioRepository;
+import io.github.rodolfoMeneguetti.exception.SenhaInvalidaException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.security.core.userdetails.User;
 import org.springframework.security.core.userdetails.UserDetails;
@@ -23,6 +24,15 @@ public class UsuarioServiceImpl implements UserDetailsService {
     @Transactional
     public Usuario salvar(Usuario usuario){
         return userRepository.save(usuario);
+    }
+
+    public UserDetails autenticar ( Usuario usuario) {
+        UserDetails user = loadUserByUsername(usuario.getUserName());
+        boolean senhasCombinam = encoder.matches(usuario.getPassword(), user.getPassword());
+        if(senhasCombinam){
+            return user;
+        }
+        throw new SenhaInvalidaException();
     }
 
     @Override
