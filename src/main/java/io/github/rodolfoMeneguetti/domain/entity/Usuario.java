@@ -18,10 +18,10 @@ import javax.validation.constraints.NotEmpty;
 public class Usuario {
 
     @Id
-    @GeneratedValue(strategy = GenerationType.AUTO)
+    @GeneratedValue(strategy = GenerationType.IDENTITY)
     private Integer id;
 
-    @Column
+    @Column(name = "user_name", length = 50)
     @NotEmpty(message = "{campo.nomeUsuario.obrigatorio}")
     private String userName;
 
